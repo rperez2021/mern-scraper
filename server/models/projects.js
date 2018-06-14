@@ -14,6 +14,9 @@ var projectSchema = new Schema({
       type: String, 
       required: true
   },
+  slug: { type: 'String', required: true },
+  cuid: { type: 'String', required: true },
+  dateAdded: { type: 'Date', default: Date.now, required: true },
   note: {
     type: Schema.Types.ObjectId,
     ref: "Note"

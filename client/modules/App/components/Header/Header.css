@@ -30,6 +30,7 @@
   padding: 8px 16px;
   text-decoration: none;
   border-radius: 1000px;
+  margin: 2px;
   float: right;
 }
 
@@ -59,6 +60,7 @@
 .selected {
   border-bottom: 1px solid #fff;
 }
+
 
 @media (max-width: 767px){
   .add-post-button{

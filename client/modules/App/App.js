@@ -10,7 +10,7 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 
 // Import Actions
-import { toggleAddPost } from './AppActions';
+import { toggleAddPost, toggleViewProjects } from './AppActions';
 import { switchLanguage } from '../../modules/Intl/IntlActions';
 
 let DevTools;
@@ -33,14 +33,18 @@ export class App extends Component {
     this.props.dispatch(toggleAddPost());
   };
 
+  toggleViewProjectsSection = () => {
+    this.props.dispatch(toggleViewProjects());
+  }
+
   render() {
     return (
       <div>
         {this.state.isMounted && !window.devToolsExtension && process.env.NODE_ENV === 'development' && <DevTools />}
         <div>
           <Helmet
-            title="MERN Starter - Blog App"
-            titleTemplate="%s - Blog App"
+            title="MERN Github Project Scraper"
+            titleTemplate="%s - Scraping Tool"
             meta={[
               { charset: 'utf-8' },
               {
@@ -57,6 +61,7 @@ export class App extends Component {
             switchLanguage={lang => this.props.dispatch(switchLanguage(lang))}
             intl={this.props.intl}
             toggleAddPost={this.toggleAddPostSection}
+            toggleViewProjects={this.toggleViewProjectsSection}
           />
           <div className={styles.container}>
             {this.props.children}

@@ -14,73 +14,72 @@ import cheerio from 'cheerio'
  */
 
 export function scrapeGithub(req, res) {
-  axios.get("https://github.com/trending").then(function(response) {
-      // Then, we load that into cheerio and save it to $ for a shorthand selector
-      var $ = cheerio.load(response.data);
-  console.log(response.data)
-      // Now, we grab every h2 within an article tag, and do the following:
-      $("li").each(function(i, element) {
-        // Save an empty result object
-        var result = {};
-  
-        // Add the text and href of every link, and save them as properties of the result object
-        result.title = $(this)
-          .children("div")
-          .children("h3")
-          .children("a")
-          .text();
-        result.link = "https://github.com" + $(this)
+  axios.get("https://github.com/trending").then(function (response) {
+    // Then, we load that into cheerio and save it to $ for a shorthand selector
+    var $ = cheerio.load(response.data);
+    console.log(response.data)
+    // Now, we grab every h2 within an article tag, and do the following:
+    $("li").each(function (i, element) {
+      // Save an empty result object
+      var result = {};
+
+      // Add the text and href of every link, and save them as properties of the result object
+      result.title = $(this)
         .children("div")
         .children("h3")
         .children("a")
-          .attr("href");
-        result.description = $(this)
+        .text();
+      result.link = "https://github.com" + $(this)
+        .children("div")
+        .children("h3")
+        .children("a")
+        .attr("href");
+      result.description = $(this)
         .children("div:nth-of-type(3)")
         .children("p")
         .text();
-  
-        // Create a new Article using the `result` object built from scraping
-        Project.create(result)
-          .then(function(dbArticle) {
-            // View the added result in the console
-            console.log(dbArticle);
-          })
-          .catch(function(err) {
-            // If an error occurred, send it to the client
-            return res.json(err);
-          });
-      });
-  
-      // If we were able to successfully scrape and save an Article, send a message to the client
-      res.redirect('/')
+      result.slug = slug(result.title.toLowerCase(), { lowercase: true });
+      result.cuid = cuid();
+
+      // Create a new Article using the `result` object built from scraping
+      Project.create(result)
+        .then(function (dbArticle) {
+          // View the added result in the console
+          console.log(dbArticle);
+        })
+        .catch(function (err) {
+          // If an error occurred, send it to the client
+          return res.json(err);
+        });
     });
+
+    // If we were able to successfully scrape and save an Article, send a message to the client
+    res.redirect('/')
+  });
 }
 
 
 export function getAllProjects(req, res) {
-  Project.find({})
-      .then(function(dbArticle) {
-        // If we were able to successfully find Articles, send them back to the client
-        res.json(dbArticle);
-      })
-      .catch(function(err) {
-        // If an error occurred, send it to the client
-        res.json(err);
-      });
+  Project.find().sort('-dateAdded').exec((err, projects) => {
+    if (err) {
+      res.status(500).send(err);
+    }
+    res.json({ projects });
+  });
 }
 
 export function getOneProject(req, res) {
   Project.findOne({ _id: req.params.id })
-      // ..and populate all of the notes associated with it
-      .populate("note")
-      .then(function(dbArticle) {
-        // If we were able to successfully find an Article with the given id, send it back to the client
-        res.json(dbArticle);
-      })
-      .catch(function(err) {
-        // If an error occurred, send it to the client
-        res.json(err);
-      });
+    // ..and populate all of the notes associated with it
+    .populate("note")
+    .then(function (dbArticle) {
+      // If we were able to successfully find an Article with the given id, send it back to the client
+      res.json(dbArticle);
+    })
+    .catch(function (err) {
+      // If an error occurred, send it to the client
+      res.json(err);
+    });
 }
 
 export function deleteProject(req, res) {
@@ -97,9 +96,9 @@ export function deleteProject(req, res) {
 
 export function deleteAll(req, res) {
   Project.collection.drop()
-      Note.collection.drop()
-      .catch(function(err) {
-          res.json(err)
-      })
-        res.redirect('/')
+  Note.collection.drop()
+    .catch(function (err) {
+      res.json(err)
+    })
+  res.redirect('/')
 }

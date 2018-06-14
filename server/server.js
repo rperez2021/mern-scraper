@@ -73,8 +73,8 @@ app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
 app.use('/api', posts);
-app.use('/api', notes,);
-app.use('/api', projects,);
+app.use('/api', notes);
+app.use('/api', projects);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {

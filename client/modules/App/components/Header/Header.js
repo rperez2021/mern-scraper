@@ -22,11 +22,24 @@ export function Header(props, context) {
         <h1 className={styles['site-title']}>
           <Link to="/" ><FormattedMessage id="siteTitle" /></Link>
         </h1>
+        <div>
         {
           context.router.isActive('/', true)
-            ? <a className={styles['add-post-button']} href="#" onClick={props.toggleAddPost}><FormattedMessage id="addPost" /></a>
+            ? 
+            <div>
+            <a className={styles['add-post-button']} href="#" onClick={props.toggleAddPost}><FormattedMessage id="addPost" /></a>  
+            <a className={styles['add-post-button']} href="/projects/" onClick={props.toggleViewProjects}><FormattedMessage id="viewProjects" /></a>
+            </div>
             : null
         }
+        </div>
+        {/* <div>
+         {
+          context.router.isActive('/', false)
+            ? <a className={styles['add-post-button']} href="#" onClick={props.toggleViewProjects}><FormattedMessage id="viewProjects" /></a>
+            : null
+        }
+        </div> */}
       </div>
     </div>
   );
@@ -38,6 +51,7 @@ Header.contextTypes = {
 
 Header.propTypes = {
   toggleAddPost: PropTypes.func.isRequired,
+  toggleViewProjects: PropTypes.func.isRequired,
   switchLanguage: PropTypes.func.isRequired,
   intl: PropTypes.object.isRequired,
 };
