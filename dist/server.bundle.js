@@ -558,7 +558,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var config = {
-  mongoURL: process.env.MONGO_URL || 'mongodb://localhost:27017/mern-starter',
+  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/mern-starter',
   port: process.env.PORT || 8000
 };
 
@@ -1349,7 +1349,10 @@ _mongoose2.default.Promise = global.Promise;
 
 // MongoDB Connection
 if (process.env.NODE_ENV !== 'test') {
-  _mongoose2.default.connect(_config2.default.mongoURL, function (error) {
+  _mongoose2.default.connect(_config2.default.MONGODB_URI, {
+    useMongoClient: true
+    /* other options */
+  }, function (error) {
     if (error) {
       console.error('Please make sure Mongodb is installed and running!'); // eslint-disable-line no-console
       throw error;
